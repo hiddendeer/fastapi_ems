@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # FastAPI 应用服务
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-ems
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DB_HOST=14.103.138.196
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=123456
+      - DB_NAME=py_study
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - ems-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # 开发环境服务（带热重载）
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-ems-dev
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - DB_HOST=14.103.138.196
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=123456
+      - DB_NAME=py_study
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+    networks:
+      - ems-network
+    profiles:
+      - dev
+
+networks:
+  ems-network:
+    driver: bridge
+

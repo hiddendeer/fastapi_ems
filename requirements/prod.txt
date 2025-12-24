@@ -1,0 +1,10 @@
+# 生产环境依赖
+-r base.txt
+
+# 安全
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# 性能监控
+prometheus-client>=0.19.0
+

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人技能管理 - Figma Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">个人技能管理</h1>
+                    <p class="text-sm text-gray-500 mt-1">管理和追踪您的技能发展进度</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 rounded-md font-medium text-sm bg-gray-100 text-gray-900 hover:bg-gray-200">
+                        显示分类
+                    </button>
+                    <button class="px-4 py-2 rounded-md font-medium text-sm bg-blue-600 text-white hover:bg-blue-700">
+                        + 添加技能
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <p class="text-sm text-gray-600 mb-1">总技能数</p>
+                <p class="text-3xl font-bold text-gray-900">10</p>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <p class="text-sm text-gray-600 mb-1">专家级</p>
+                <p class="text-3xl font-bold text-green-600">5</p>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <p class="text-sm text-gray-600 mb-1">中级</p>
+                <p class="text-3xl font-bold text-blue-600">3</p>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <p class="text-sm text-gray-600 mb-1">初级</p>
+                <p class="text-3xl font-bold text-yellow-600">2</p>
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="mb-6">
+            <div class="flex gap-2 border-b border-gray-200 pb-0">
+                <button class="px-4 py-2 text-sm font-medium border-b-2 border-blue-600 text-blue-600">
+                    编程语言
+                </button>
+                <button class="px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-900">
+                    前端框架
+                </button>
+                <button class="px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-900">
+                    后端框架
+                </button>
+                <button class="px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-900">
+                    数据库
+                </button>
+            </div>
+        </div>
+
+        <!-- Skills Grid -->
+        <div class="space-y-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">编程语言</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Skill Card 1 -->
+                <div class="p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 text-base">Python</h3>
+                            <p class="text-sm text-gray-500 mt-1">数据处理和后端开发</p>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-600">掌握程度</span>
+                            <span class="text-xs font-medium text-gray-900">90%</span>
+                        </div>
+                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                            专家级
+                        </span>
+                        <span class="text-xs text-gray-500">5 年经验</span>
+                    </div>
+                </div>
+
+                <!-- Skill Card 2 -->
+                <div class="p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 text-base">JavaScript</h3>
+                            <p class="text-sm text-gray-500 mt-1">前端和全栈开发</p>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-600">掌握程度</span>
+                            <span class="text-xs font-medium text-gray-900">85%</span>
+                        </div>
+                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                            专家级
+                        </span>
+                        <span class="text-xs text-gray-500">4 年经验</span>
+                    </div>
+                </div>
+
+                <!-- Skill Card 3 -->
+                <div class="p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 text-base">TypeScript</h3>
+                            <p class="text-sm text-gray-500 mt-1">类型安全的 JavaScript</p>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-600">掌握程度</span>
+                            <span class="text-xs font-medium text-gray-900">72%</span>
+                        </div>
+                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500" style="width: 72%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            中级
+                        </span>
+                        <span class="text-xs text-gray-500">2 年经验</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frontend Frameworks Section -->
+        <div class="space-y-6 mt-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">前端框架</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Skill Card 4 -->
+                <div class="p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 text-base">Vue 3</h3>
+                            <p class="text-sm text-gray-500 mt-1">现代前端框架</p>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-600">掌握程度</span>
+                            <span class="text-xs font-medium text-gray-900">75%</span>
+                        </div>
+                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            中级
+                        </span>
+                        <span class="text-xs text-gray-500">2 年经验</span>
+                    </div>
+                </div>
+
+                <!-- Skill Card 5 -->
+                <div class="p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 text-base">React</h3>
+                            <p class="text-sm text-gray-500 mt-1">组件化前端框架</p>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-600">掌握程度</span>
+                            <span class="text-xs font-medium text-gray-900">70%</span>
+                        </div>
+                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            中级
+                        </span>
+                        <span class="text-xs text-gray-500">2.5 年经验</span>
+                    </div>
+                </div>
+
+                <!-- Skill Card 6 -->
+                <div class="p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-gray-300">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 text-base">Tailwind CSS</h3>
+                            <p class="text-sm text-gray-500 mt-1">原子化 CSS 框架</p>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-600">掌握程度</span>
+                            <span class="text-xs font-medium text-gray-900">80%</span>
+                        </div>
+                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                            专家级
+                        </span>
+                        <span class="text-xs text-gray-500">2.5 年经验</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

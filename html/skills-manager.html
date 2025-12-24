@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人技能管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        
+        /* Radix UI 风格 */
+        .radix-input {
+            @apply px-3 py-2 bg-white border border-gray-200 rounded-md text-sm shadow-sm transition-colors;
+            @apply hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+        }
+        
+        .radix-button {
+            @apply px-4 py-2 rounded-md font-medium text-sm transition-colors;
+            @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+        }
+        
+        .radix-button-primary {
+            @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+        }
+        
+        .radix-button-secondary {
+            @apply bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500;
+        }
+        
+        .radix-button-danger {
+            @apply bg-red-100 text-red-900 hover:bg-red-200 focus:ring-red-500;
+        }
+        
+        .skill-card {
+            @apply p-4 bg-white border border-gray-200 rounded-lg transition-all;
+            @apply hover:shadow-md hover:border-gray-300;
+        }
+        
+        .skill-level {
+            @apply inline-block px-2.5 py-1 text-xs font-semibold rounded-full;
+        }
+        
+        .skill-level-expert {
+            @apply bg-green-100 text-green-800;
+        }
+        
+        .skill-level-intermediate {
+            @apply bg-blue-100 text-blue-800;
+        }
+        
+        .skill-level-beginner {
+            @apply bg-yellow-100 text-yellow-800;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app" v-cloak>
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200">
+            <div class="max-w-6xl mx-auto px-4 py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">个人技能管理</h1>
+                        <p class="text-sm text-gray-500 mt-1">管理和追踪您的技能发展进度</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button 
+                            @click="toggleCategory"
+                            class="radix-button radix-button-secondary"
+                        >
+                            {{ showCategory ? '隐藏分类' : '显示分类' }}
+                        </button>
+                        <button 
+                            @click="showAddSkillModal = true"
+                            class="radix-button radix-button-primary"
+                        >
+                            + 添加技能
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-6xl mx-auto px-4 py-8">
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 mb-1">总技能数</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ skills.length }}</p>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 mb-1">专家级</p>
+                    <p class="text-3xl font-bold text-green-600">{{ expertCount }}</p>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 mb-1">中级</p>
+                    <p class="text-3xl font-bold text-blue-600">{{ intermediateCount }}</p>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 mb-1">初级</p>
+                    <p class="text-3xl font-bold text-yellow-600">{{ beginnerCount }}</p>
+                </div>
+            </div>
+
+            <!-- Category Tabs (if visible) -->
+            <div v-if="showCategory" class="mb-6">
+                <div class="flex gap-2 border-b border-gray-200 pb-0">
+                    <button 
+                        v-for="cat in categories" 
+                        :key="cat"
+                        @click="selectedCategory = cat"
+                        :class="[
+                            'px-4 py-2 text-sm font-medium border-b-2 transition-colors',
+                            selectedCategory === cat 
+                                ? 'border-blue-600 text-blue-600' 
+                                : 'border-transparent text-gray-600 hover:text-gray-900'
+                        ]"
+                    >
+                        {{ cat }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Skills Grid -->
+            <div class="space-y-6">
+                <div v-if="filteredSkills.length === 0" class="text-center py-12">
+                    <p class="text-gray-500 text-base">暂无技能，点击右上角添加您的第一个技能</p>
+                </div>
+
+                <div v-for="(group, category) in groupedSkills" :key="category" v-else>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ category }}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div 
+                            v-for="skill in group" 
+                            :key="skill.id"
+                            class="skill-card"
+                        >
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-gray-900 text-base">{{ skill.name }}</h3>
+                                    <p class="text-sm text-gray-500 mt-1">{{ skill.description }}</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs text-gray-600">掌握程度</span>
+                                    <span class="text-xs font-medium text-gray-900">{{ skill.proficiency }}%</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div 
+                                        :style="{ width: skill.proficiency + '%' }"
+                                        :class="[
+                                            'h-full transition-all',
+                                            skill.level === 'expert' ? 'bg-green-500' : 
+                                            skill.level === 'intermediate' ? 'bg-blue-500' : 
+                                            'bg-yellow-500'
+                                        ]"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between mb-4">
+                                <span :class="['skill-level', 'skill-level-' + skill.level]">
+                                    {{ getLevelLabel(skill.level) }}
+                                </span>
+                                <span class="text-xs text-gray-500">{{ skill.yearsOfExperience }} 年经验</span>
+                            </div>
+
+                            <!-- <div class="flex gap-2">
+                                <button 
+                                    @click="editSkill(skill)"
+                                    class="flex-1 radix-button radix-button-secondary text-xs"
+                                >
+                                    编辑
+                                </button>
+                                <button 
+                                    @click="deleteSkill(skill.id)"
+                                    class="flex-1 radix-button radix-button-danger text-xs"
+                                >
+                                    删除
+                                </button>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Add/Edit Skill Modal -->
+        <div 
+            v-if="showAddSkillModal"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            @click.self="closeModal"
+        >
+            <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">
+                    {{ editingSkill ? '编辑技能' : '添加新技能' }}
+                </h2>
+
+                <form @submit.prevent="saveSkill" class="space-y-4">
+                    <!-- Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            技能名称 <span class="text-red-500">*</span>
+                        </label>
+                        <input 
+                            v-model="formData.name"
+                            type="text"
+                            placeholder="如：Python 编程"
+                            class="radix-input w-full"
+                            required
+                        >
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            描述
+                        </label>
+                        <input 
+                            v-model="formData.description"
+                            type="text"
+                            placeholder="简要描述这个技能"
+                            class="radix-input w-full"
+                        >
+                    </div>
+
+                    <!-- Category -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            分类 <span class="text-red-500">*</span>
+                        </label>
+                        <select 
+                            v-model="formData.category"
+                            class="radix-input w-full"
+                            required
+                        >
+                            <option value="">选择分类</option>
+                            <option v-for="cat in categories" :key="cat" :value="cat">
+                                {{ cat }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Level -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            水平 <span class="text-red-500">*</span>
+                        </label>
+                        <select 
+                            v-model="formData.level"
+                            class="radix-input w-full"
+                            required
+                        >
+                            <option value="beginner">初级</option>
+                            <option value="intermediate">中级</option>
+                            <option value="expert">专家级</option>
+                        </select>
+                    </div>
+
+                    <!-- Proficiency -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            掌握程度 (%)
+                        </label>
+                        <input 
+                            v-model.number="formData.proficiency"
+                            type="range"
+                            min="0"
+                            max="100"
+                            step="5"
+                            class="w-full"
+                        >
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-xs text-gray-600">0%</span>
+                            <span class="text-sm font-semibold text-gray-900">{{ formData.proficiency }}%</span>
+                            <span class="text-xs text-gray-600">100%</span>
+                        </div>
+                    </div>
+
+                    <!-- Years of Experience -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            经验年数
+                        </label>
+                        <input 
+                            v-model.number="formData.yearsOfExperience"
+                            type="number"
+                            min="0"
+                            max="50"
+                            step="0.5"
+                            class="radix-input w-full"
+                        >
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3 pt-4">
+                        <button 
+                            type="button"
+                            @click="closeModal"
+                            class="flex-1 radix-button radix-button-secondary"
+                        >
+                            取消
+                        </button>
+                        <button 
+                            type="submit"
+                            class="flex-1 radix-button radix-button-primary"
+                        >
+                            {{ editingSkill ? '保存修改' : '添加技能' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed } = Vue;
+
+        createApp({
+            setup() {
+                // Data
+                const showAddSkillModal = ref(false);
+                const showCategory = ref(true);
+                const selectedCategory = ref('编程语言');
+                const editingSkill = ref(null);
+
+                const categories = ['编程语言', '前端框架', '后端框架', '数据库', '工具与平台', '其他'];
+
+                const skills = ref([
+                    {
+                        id: 1,
+                        name: 'Python',
+                        description: '数据处理和后端开发',
+                        category: '编程语言',
+                        level: 'expert',
+                        proficiency: 90,
+                        yearsOfExperience: 5
+                    },
+                    {
+                        id: 2,
+                        name: 'JavaScript',
+                        description: '前端和全栈开发',
+                        category: '编程语言',
+                        level: 'expert',
+                        proficiency: 85,
+                        yearsOfExperience: 4
+                    },
+                    {
+                        id: 3,
+                        name: 'Vue 3',
+                        description: '现代前端框架',
+                        category: '前端框架',
+                        level: 'intermediate',
+                        proficiency: 75,
+                        yearsOfExperience: 2
+                    },
+                    {
+                        id: 4,
+                        name: 'React',
+                        description: '组件化前端框架',
+                        category: '前端框架',
+                        level: 'intermediate',
+                        proficiency: 70,
+                        yearsOfExperience: 2.5
+                    },
+                    {
+                        id: 5,
+                        name: 'FastAPI',
+                        description: '现代 Python Web 框架',
+                        category: '后端框架',
+                        level: 'expert',
+                        proficiency: 88,
+                        yearsOfExperience: 3
+                    },
+                    {
+                        id: 6,
+                        name: 'Docker',
+                        description: '容器化和部署',
+                        category: '工具与平台',
+                        level: 'intermediate',
+                        proficiency: 72,
+                        yearsOfExperience: 2
+                    },
+                    {
+                        id: 7,
+                        name: 'MySQL',
+                        description: '关系型数据库',
+                        category: '数据库',
+                        level: 'intermediate',
+                        proficiency: 78,
+                        yearsOfExperience: 3
+                    },
+                    {
+                        id: 8,
+                        name: 'Redis',
+                        description: '缓存和实时数据存储',
+                        category: '数据库',
+                        level: 'beginner',
+                        proficiency: 55,
+                        yearsOfExperience: 1
+                    },
+                    {
+                        id: 9,
+                        name: 'Git',
+                        description: '版本控制系统',
+                        category: '工具与平台',
+                        level: 'expert',
+                        proficiency: 92,
+                        yearsOfExperience: 4
+                    },
+                    {
+                        id: 10,
+                        name: 'AWS',
+                        description: '云计算平台',
+                        category: '工具与平台',
+                        level: 'beginner',
+                        proficiency: 45,
+                        yearsOfExperience: 0.5
+                    }
+                ]);
+
+                const formData = ref({
+                    name: '',
+                    description: '',
+                    category: '',
+                    level: 'intermediate',
+                    proficiency: 50,
+                    yearsOfExperience: 1
+                });
+
+                // Computed
+                const expertCount = computed(() => skills.value.filter(s => s.level === 'expert').length);
+                const intermediateCount = computed(() => skills.value.filter(s => s.level === 'intermediate').length);
+                const beginnerCount = computed(() => skills.value.filter(s => s.level === 'beginner').length);
+
+                const filteredSkills = computed(() => {
+                    if (!showCategory.value) return skills.value;
+                    return skills.value.filter(s => s.category === selectedCategory.value);
+                });
+
+                const groupedSkills = computed(() => {
+                    const groups = {};
+                    filteredSkills.value.forEach(skill => {
+                        if (!groups[skill.category]) {
+                            groups[skill.category] = [];
+                        }
+                        groups[skill.category].push(skill);
+                    });
+                    return groups;
+                });
+
+                // Methods
+                const toggleCategory = () => {
+                    showCategory.value = !showCategory.value;
+                };
+
+                const closeModal = () => {
+                    showAddSkillModal.value = false;
+                    editingSkill.value = null;
+                    resetForm();
+                };
+
+                const resetForm = () => {
+                    formData.value = {
+                        name: '',
+                        description: '',
+                        category: '',
+                        level: 'intermediate',
+                        proficiency: 50,
+                        yearsOfExperience: 1
+                    };
+                };
+
+                const editSkill = (skill) => {
+                    editingSkill.value = skill;
+                    formData.value = { ...skill };
+                    showAddSkillModal.value = true;
+                };
+
+                const saveSkill = () => {
+                    if (editingSkill.value) {
+                        // Update existing
+                        const index = skills.value.findIndex(s => s.id === editingSkill.value.id);
+                        if (index !== -1) {
+                            skills.value[index] = {
+                                ...editingSkill.value,
+                                ...formData.value
+                            };
+                        }
+                    } else {
+                        // Add new
+                        const newSkill = {
+                            id: Math.max(...skills.value.map(s => s.id), 0) + 1,
+                            ...formData.value
+                        };
+                        skills.value.push(newSkill);
+                    }
+                    closeModal();
+                };
+
+                const deleteSkill = (id) => {
+                    if (confirm('确定要删除这个技能吗？')) {
+                        skills.value = skills.value.filter(s => s.id !== id);
+                    }
+                };
+
+                const getLevelLabel = (level) => {
+                    const labels = {
+                        'beginner': '初级',
+                        'intermediate': '中级',
+                        'expert': '专家级'
+                    };
+                    return labels[level] || level;
+                };
+
+                return {
+                    showAddSkillModal,
+                    showCategory,
+                    selectedCategory,
+                    editingSkill,
+                    categories,
+                    skills,
+                    formData,
+                    expertCount,
+                    intermediateCount,
+                    beginnerCount,
+                    filteredSkills,
+                    groupedSkills,
+                    toggleCategory,
+                    closeModal,
+                    resetForm,
+                    editSkill,
+                    saveSkill,
+                    deleteSkill,
+                    getLevelLabel
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
+

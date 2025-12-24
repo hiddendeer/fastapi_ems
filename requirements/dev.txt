@@ -1,0 +1,14 @@
+# 开发环境依赖
+-r base.txt
+
+# 代码质量
+ruff>=0.1.14
+
+# 测试
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+
+# 调试
+ipython>=8.0.0
+

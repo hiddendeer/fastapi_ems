@@ -42,11 +42,12 @@ class Settings(BaseSettings):
     CORS_ALLOW_HEADERS: list[str] = ["*"]
 
     # 数据库配置 - 主数据库
-    DB_HOST: str = "14.103.138.196"
+    # 从 .env 文件读取，没有则使用空字符串（必须通过环境变量配置）
+    DB_HOST: str = ""
     DB_PORT: int = 3306
-    DB_USER: str = "root"
-    DB_PASSWORD: str = "123456"
-    DB_NAME: str = "py_study"  # 默认数据库
+    DB_USER: str = ""
+    DB_PASSWORD: str = ""
+    DB_NAME: str = ""  # 默认数据库
     DB_ECHO: bool = False  # 是否打印 SQL 语句
 
     # 多数据库配置

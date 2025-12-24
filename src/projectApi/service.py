@@ -5,10 +5,12 @@
 from typing import Any
 from datetime import datetime
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.crud import BaseCRUD
 from src.projectApi.models import User
+from src.demo.models import Item
 from src.projectApi.schemas import UserCreate, UserResponse, UserUpdate
 from src.exceptions import NotFoundException
 
@@ -40,6 +42,36 @@ async def get_user_by_openid(db: AsyncSession, openid: str) -> dict[str, Any] | 
     """
     return await user_crud.get(db=db, openid=openid)
 
+async def get_user_id(db: AsyncSession, user_id: int) -> dict[str, Any] | None:
+    """
+    根据用户ID获取用户及其关联的Item，返回字典或 None
+    """
+    result = await db.execute(
+        select(User.nickname, Item.name).outerjoin(
+            User, User.id == Item.id
+        ).where(
+            User.id == user_id
+        )
+    )
+    
+    result_handle = result.all()
+    
+    # 如果没有查询到数据，返回 None
+    if not result_handle:
+        return None
+    
+    # 提取第一条记录的用户昵称（所有记录的用户昵称相同）
+    user_nickname = result_handle[0].nickname
+    
+    # 构建返回字典
+    return {
+        "nickname": user_nickname,
+        "items": [
+            {"item_name": row.name}
+            for row in result_handle
+        ],
+        "item_count": len(result_handle)
+    }
 
 async def get_users(
     db: AsyncSession,
@@ -60,12 +92,15 @@ async def get_users(
     if user_type is not None:
         filters["user_type"] = user_type
 
-    return await user_crud.get_multi(
+    result = await user_crud.get_multi(
         db=db,
         offset=offset,
         limit=limit,
         **filters,
     )
+
+    
+    return result
 
 
 async def create_user(db: AsyncSession, user_data: UserCreate) -> dict[str, Any]:

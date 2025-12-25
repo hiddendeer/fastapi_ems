@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 
-from src.config import settings
+from src.common.config import settings
 
 
 class SQLLogger:

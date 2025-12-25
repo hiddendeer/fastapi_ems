@@ -7,7 +7,7 @@ from typing import Any
 
 from pydantic import Field, EmailStr
 
-from src.schemas import CustomModel
+from src.common.schemas import CustomModel
 
 
 class UserBase(CustomModel):

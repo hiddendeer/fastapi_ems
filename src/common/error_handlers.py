@@ -7,7 +7,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic_core import ValidationError
 
-from src.schemas import ErrorResponse
+from src.common.schemas import ErrorResponse
 
 
 # 中文验证错误信息映射

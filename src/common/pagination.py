@@ -7,7 +7,7 @@ from typing import TypeVar
 from fastapi import Query
 from pydantic import BaseModel
 
-from src.schemas import PageInfo
+from src.common.schemas import PageInfo
 
 
 class PaginationParams(BaseModel):

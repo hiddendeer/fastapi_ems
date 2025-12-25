@@ -12,7 +12,7 @@ from src.crud import BaseCRUD
 from src.projectApi.models import User
 from src.demo.models import Item
 from src.projectApi.schemas import UserCreate, UserResponse, UserUpdate
-from src.exceptions import NotFoundException
+from src.common.exceptions import NotFoundException
 
 
 class UserCRUD(BaseCRUD[User, UserCreate, UserUpdate]):

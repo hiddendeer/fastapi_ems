@@ -7,10 +7,10 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.crud import BaseCRUD
-from src.database import db_manager
+from src.common.database import db_manager
 from src.demo.models import Item
 from src.demo.schemas import ItemCreate, ItemResponse, ItemUpdate
-from src.exceptions import NotFoundException
+from src.common.exceptions import NotFoundException
 
 
 class ItemCRUD(BaseCRUD[Item, ItemCreate, ItemUpdate]):

@@ -5,7 +5,7 @@ Demo 模块 - 数据库模型
 from sqlalchemy import Boolean, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.models import BaseModel
+from src.common.models import BaseModel
 
 
 class Item(BaseModel):

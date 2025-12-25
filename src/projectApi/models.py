@@ -8,7 +8,7 @@ from typing import Any
 from sqlalchemy import Integer, String, DateTime, Text, JSON, Index, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.models import BaseModel
+from src.common.models import BaseModel
 
 
 class User(BaseModel):

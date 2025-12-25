@@ -8,7 +8,7 @@ from typing import Any
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from src.constants import Environment
+from src.common.constants import Environment
 
 
 class Settings(BaseSettings):

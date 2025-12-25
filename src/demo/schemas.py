@@ -6,7 +6,7 @@ from datetime import datetime
 
 from pydantic import Field
 
-from src.schemas import CustomModel
+from src.common.schemas import CustomModel
 
 
 class ItemBase(CustomModel):

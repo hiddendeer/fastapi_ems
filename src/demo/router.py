@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, Query, status
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_db
+from src.common.database import get_db
 from src.demo.dependencies import valid_item_id
 from src.demo.service import (
     create_item as create_item_service,
@@ -27,8 +27,8 @@ from src.demo.schemas import (
     ItemResponse,
     ItemUpdate,
 )
-from src.pagination import PaginationParams, get_pagination
-from src.schemas import MessageResponse
+from src.common.pagination import PaginationParams, get_pagination
+from src.common.schemas import MessageResponse
 
 
 router = APIRouter(prefix="/items", tags=["Demo - Items"])

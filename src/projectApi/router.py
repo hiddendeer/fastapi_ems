@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, Query, status
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_db
-from src.schemas import ResponseModel
+from src.common.database import get_db
+from src.common.schemas import ResponseModel
 from src.projectApi.service import get_users, get_user_id
 from src.projectApi.schemas import UserResponse
 
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/projectApi", tags=["ProjectApi"])
 
 @router.get("/info")
 async def get_project_info(
-    just_id: str = Query(None, description="用户ID"),
+    just_id: str = Query(..., description="用户ID"),
     db: AsyncSession = Depends(get_db),
 ) -> ResponseModel:
     """获取用户信息"""

@@ -2,7 +2,7 @@
 Demo 模块 - 异常定义
 演示如何定义模块特定的异常
 """
-from src.exceptions import NotFoundException, BadRequestException
+from src.common.exceptions import NotFoundException, BadRequestException
 
 
 class ItemNotFound(NotFoundException):

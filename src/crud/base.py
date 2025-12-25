@@ -8,7 +8,7 @@ from fastcrud import FastCRUD
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import Base
+from src.common.database import Base
 
 
 # 类型变量

@@ -6,10 +6,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.config import settings
-from src.database import Base, db_manager
-from src.error_handlers import setup_exception_handlers
-from src.middleware import RequestLoggingMiddleware, setup_sql_logging
+from src.common.config import settings
+from src.common.database import Base, db_manager
+from src.common.error_handlers import setup_exception_handlers
+from src.common.middleware import RequestLoggingMiddleware, setup_sql_logging
 from src.utils.logger import logger
 
 

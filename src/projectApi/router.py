@@ -13,12 +13,28 @@ from src.projectApi.schemas import UserResponse
 
 router = APIRouter(prefix="/projectApi", tags=["ProjectApi"])
 
+class ModbusClass:
+    def __init__(self, name):
+        self.name = name
+
+    def get_name(self) -> str:
+        return self.name
+
+    async def get_info(self) -> str:
+        await asyncio.sleep(5)
+        print("get_info")
+        return f"name: {self.name}"
+
 @router.get("/info")
 async def get_project_info(
     just_id: str = Query(..., description="用户ID"),
     db: AsyncSession = Depends(get_db),
 ) -> ResponseModel:
     """获取用户信息"""
+
+    modbus_class = ModbusClass("ModbusClass")
+
+    asyncio.create_task(modbus_class.get_info())
     
     try:
         # 1. 验证参数
@@ -44,12 +60,6 @@ async def get_project_info(
                 data=None
             )
 
-        list_info = {"a": 1}
-        if not list_info:
-            print("list_info is empty")
-
-        if "a" in list_info:
-            print("a is in list_info")
         
         # 5. 安全检查：用户列表是否为空
         if not result_handle:

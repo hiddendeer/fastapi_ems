@@ -17,6 +17,8 @@ python-multipart>=0.0.6
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 httpx>=0.26.0
+pymodbus>=3.5.0
+influxdb-client
 
 # 开发依赖
 ruff>=0.1.14

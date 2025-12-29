@@ -130,7 +130,83 @@ async def update_user(
     if update_data:
         await user_crud.update(db=db, object=update_data, id=user_id)
 
-    return await get_user_by_id(db, user_id)
+
+# ==========================================
+# 原生 SQL 操作演示 - 核心知识点 3
+# ==========================================
+from sqlalchemy import text
+
+async def create_user_raw(db: AsyncSession, user_data: UserCreate) -> dict[str, Any]:
+    """
+    创建用户
+    """
+    # 1. 定义插入语句
+    # 注意：MySQL 不支持 RETURNING，我们需要分为插入和查询两步
+    # 同时手动处理 created_at 和 updated_at，因为原生 SQL 不会触发 Python 层的默认值
+    sql_insert = text("""
+        INSERT INTO users (nickname, openid, user_type, status, is_active, created_at, updated_at)
+        VALUES (:nickname, :openid, :user_type, :status, :is_active, NOW(), NOW())
+    """)
+    
+    # 2. 执行插入
+    result = await db.execute(sql_insert, {
+        "nickname": user_data.nickname,
+        "openid": user_data.openid,
+        "user_type": user_data.user_type,
+        "status": user_data.status,
+        "is_active": user_data.is_active,
+    })
+    
+    # 3. 获取刚刚生成的 ID (SQLAlchemy 异步模式下获取 lastrowid 的标准做法)
+    inserted_id = result.lastrowid
+    
+    # 4. 查询并返回完整数据
+    sql_select = text("SELECT * FROM users WHERE id = :uid")
+    final_result = await db.execute(sql_select, {"uid": inserted_id})
+    
+    return dict(final_result.mappings().one())
+    
+
+async def get_user_stats_raw(db: AsyncSession, user_id: int) -> dict[str, Any]:
+    """
+    演示如何使用原生 SQL 执行复杂查询
+    适用于：需要极高性能、使用数据库特有函数、或 ORM 难以表达的复杂 JOIN/聚合。
+    """
+    
+    # 1. 定义原生 SQL 语句
+    # 使用 :param_name 占位符防止 SQL 注入（核心安全知识）
+    # 使用 text() 函数包装字符串
+    sql_query = text("""
+        SELECT 
+            id, 
+            nickname, 
+            login_count,
+            created_at,
+            -- 这里演示数据库特有的逻辑（假设 MySQL）
+            CASE 
+                WHEN login_count > 10 THEN '活跃用户'
+                WHEN login_count > 0 THEN '普通用户'
+                ELSE '静默用户'
+            END as user_level
+        FROM users 
+        WHERE id = :uid AND deleted_at IS NULL
+    """)
+    
+    # 2. 执行查询
+    # db.execute 是异步方法，必须 await
+    # params 传入一个字典进行参数绑定
+    result = await db.execute(sql_query, {"uid": user_id})
+    
+    # 3. 处理结果
+    # 对于 SELECT 语句，.fetchone() 返回 Row 对象
+    row = result.fetchone()
+    
+    if not row:
+        return {}
+    
+    # 4. Row 对象转字典 (SQLAlchemy 2.0 常见操作)
+    # Row 对象可以通过属性访问，也可以通过 _mapping 转换为字典
+    return dict(row._mapping)
 
 
 async def delete_user(db: AsyncSession, user_id: int) -> None:

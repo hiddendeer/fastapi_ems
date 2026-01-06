@@ -69,6 +69,14 @@ class Settings(BaseSettings):
     DB_MAX_OVERFLOW: int = 20  # .env: DB_MAX_OVERFLOW (最大溢出连接数)
     DB_POOL_RECYCLE: int = 1800  # .env: DB_POOL_RECYCLE (连接回收时间，秒)
 
+    # ========== InfluxDB 配置 ==========
+    # 重要：这些字段建议在 .env 文件中配置
+    INFLUXDB_URL: str = "http://localhost:8086"
+    INFLUXDB_TOKEN: str = "my-token"
+    INFLUXDB_ORG: str = "my-org"
+    INFLUXDB_BUCKET: str = "battery_data"
+
+
     @property
     def DATABASE_URL(self) -> str:
         """主数据库连接 URL"""
@@ -129,7 +137,10 @@ class Settings(BaseSettings):
             "api_prefix": self.API_V1_PREFIX,
             "server_host": self.HOST,
             "server_port": self.PORT,
+            "influxdb_url": self.INFLUXDB_URL,
+            "influxdb_bucket": self.INFLUXDB_BUCKET,
         }
+
 
 
 @lru_cache
